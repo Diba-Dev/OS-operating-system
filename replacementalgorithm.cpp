@@ -3,46 +3,48 @@ using namespace std;
 
 int main()
 {
-    // Array declaration part:
     int size;
-    cout << "Enter the size: ";
+    cout << "Enter the size of elements: ";
     cin >> size;
     int sizeofFrame;
     cout << "Enter the frame size: ";
     cin >> sizeofFrame;
     int referenceA[size], frame[sizeofFrame];
-    cout << "Enter the values: ";
+    cout << "Enter the elements: ";
     for (int i = 0; i < size; i++)
     {
         cin >> referenceA[i];
     }
-
-    // Initialize the frame array to -1 to indicate empty slots
     for (int i = 0; i < sizeofFrame; i++)
     {
         frame[i] = -1;
     }
 
+    // 2D array to store all states to visualize:
     int finalArray[size][sizeofFrame];
-    int count = 0; // Keeps track of the oldest frame slot
-    int pageFaults = 0; // Counter for total page faults
+    // counters:
+    int count = 0;
+    int pageFaults = 0;
 
-    // The main calculation part:
+    // fill the 2D array:
     for (int i = 0; i < size; i++)
     {
-        bool found = false;
+        int found = 0;
         for (int j = 0; j < sizeofFrame; j++)
         {
             if (frame[j] == referenceA[i])
             {
-                found = true;
+                found = 1;
                 break;
             }
         }
-        if (!found)
+        if (found == 0)
         {
-            frame[count] = referenceA[i];
-            count = (count + 1) % sizeofFrame;
+            frame[count++] = referenceA[i];
+            if (count >= sizeofFrame)
+            {
+                count = 0;
+            }
             pageFaults++;
         }
 
@@ -53,25 +55,29 @@ int main()
         }
     }
 
-    // Display the results
+    cout << "Value:  ";
     for (int i = 0; i < size; i++)
     {
-        cout << "For reference: " << referenceA[i] << " the frame is: ";
-        for (int j = 0; j < sizeofFrame; j++)
+        cout << referenceA[i] << "\t";
+    }
+    cout << endl;
+
+    for (int j = 0; j < sizeofFrame; j++)
+    {
+        cout << "\t";
+        for (int i = 0; i < size; i++)
         {
             if (finalArray[i][j] != -1)
             {
-                cout << finalArray[i][j] << " ";
+                cout << finalArray[i][j] << "\t";
             }
             else
             {
-                cout << "_ ";
+                cout << "-\t";
             }
         }
         cout << endl;
     }
-
     cout << "Total page faults: " << pageFaults << endl;
-
     return 0;
 }
