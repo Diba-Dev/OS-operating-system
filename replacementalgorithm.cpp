@@ -1,4 +1,5 @@
-#include <iostream>
+//Topic: Page Replacement Algorithm
+#include <bits/stdc++.h>
 using namespace std;
 
 int main()
@@ -9,57 +10,42 @@ int main()
     int sizeofFrame;
     cout << "Enter the frame size: ";
     cin >> sizeofFrame;
-    int referenceA[size];
+    int referenceA[size], frame[sizeofFrame];
     cout << "Enter the elements: ";
     for (int i = 0; i < size; i++)
     {
         cin >> referenceA[i];
     }
-
-    int frame[sizeofFrame];
-    int pageOrder[sizeofFrame]; // To simulate the queue
     for (int i = 0; i < sizeofFrame; i++)
     {
         frame[i] = -1;
-        pageOrder[i] = -1; // Initialize with -1 (empty)
     }
 
-    int nextIndex = 0; // Points to the next frame to be replaced
-    int pageFaults = 0;
+    // 2D array to store all states to visualize:
     int finalArray[size][sizeofFrame];
+    // counters:
+    int count = 0;
+    int pageFaults = 0;
 
+    // fill the 2D array:
     for (int i = 0; i < size; i++)
     {
-        bool found = false;
-        // Check if page is already in frame
+        int found = 0;
         for (int j = 0; j < sizeofFrame; j++)
         {
             if (frame[j] == referenceA[i])
             {
-                found = true;
+                found = 1;
                 break;
             }
         }
-
-        if (!found)
+        if (found == 0)
         {
-            // Replace the oldest page in frame
-            int oldPage = pageOrder[nextIndex];
-            // Remove the old page from the frame
-            for (int j = 0; j < sizeofFrame; j++)
+            frame[count++] = referenceA[i];
+            if (count >= sizeofFrame)
             {
-                if (frame[j] == oldPage)
-                {
-                    frame[j] = referenceA[i];
-                    break;
-                }
+                count = 0;
             }
-
-            // Update the frame with the new page
-            frame[nextIndex] = referenceA[i];
-            pageOrder[nextIndex] = referenceA[i];
-            nextIndex = (nextIndex + 1) % sizeofFrame; // Move to the next index in circular manner
-
             pageFaults++;
         }
 
