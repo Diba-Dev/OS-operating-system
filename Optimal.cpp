@@ -1,114 +1,88 @@
-//Topic: Page Optimal
-#include <bits/stdc++.h>
+#include <iostream>
 using namespace std;
-int DistanceCk(int index, int sizeofFrame, int size, int frame[], int referenceA[]){
-    int Distance[sizeofFrame];
-    for (int i = 0; i < sizeofFrame; i++)
-    {
-        Distance[i] = size;
-    }
-    for (int i = 0; i < sizeofFrame; i++)
-    {
-        for (int j = index; j < size; j++)
-        {
-            if (frame[i] == referenceA[j])
-            {
-                Distance[i] = j - index;
+
+int findOptimalPage(int frame[], int sizeofFrame, int referenceA[], int size, int currentIndex) {
+    int farthest = -1;
+    int pageToReplace = -1;
+
+    for (int i = 0; i < sizeofFrame; i++) {
+        bool found = false;
+        for (int j = currentIndex + 1; j < size; j++) {
+            if (frame[i] == referenceA[j]) {
+                if (j > farthest) {
+                    farthest = j;
+                    pageToReplace = i;
+                }
+                found = true;
                 break;
             }
         }
-    }
-    int maxDis = Distance[0];
-    for (int i = 1; i < sizeofFrame; i++)
-    {
-        if(maxDis < Distance[i]){
-            maxDis = Distance[i];
+        if (!found) {
+            return i; // If the page is not found in future references, replace it.
         }
     }
-    for (int i = 0; i < sizeofFrame; i++)
-    {
-        if (Distance[i] == maxDis)
-        {
-            return i;
-        }
-    }
+    return pageToReplace;
 }
 
-int main()
-{
+int main() {
     int size;
-    cout << "Enter the size of elements: ";
+    cout << "Enter the number of pages: ";
     cin >> size;
     int sizeofFrame;
     cout << "Enter the frame size: ";
     cin >> sizeofFrame;
-    int referenceA[size], frame[sizeofFrame];
-    cout << "Enter the elements: ";
-    for (int i = 0; i < size; i++)
-    {
+    int referenceA[size];
+    int frame[sizeofFrame];
+    cout << "Enter the page reference sequence: ";
+    for (int i = 0; i < size; i++) {
         cin >> referenceA[i];
     }
-    for (int i = 0; i < sizeofFrame; i++)
-    {
+    for (int i = 0; i < sizeofFrame; i++) {
         frame[i] = -1;
     }
 
-    // 2D array to store all states to visualize:
     int finalArray[size][sizeofFrame];
-    // counters:
     int pageFaults = 0;
 
-    // fill the 2D array:
-
-
-    for (int i = 0; i < size; i++)
-    {
-        int found = 0;
-        for (int j = 0; j < sizeofFrame; j++)
-        {
-            if (frame[j] == referenceA[i])
-            {
-                found = 1;
+    for (int i = 0; i < size; i++) {
+        bool found = false;
+        for (int j = 0; j < sizeofFrame; j++) {
+            if (frame[j] == referenceA[i]) {
+                found = true;
                 break;
             }
         }
-        if (found == 0)
-        {
-            int index = DistanceCk(i, sizeofFrame, size, frame, referenceA);
-            frame[index] = referenceA[i];
+        if (!found) {
+            int replaceIndex = findOptimalPage(frame, sizeofFrame, referenceA, size, i);
+            frame[replaceIndex] = referenceA[i];
             pageFaults++;
         }
 
         // Store the current frame state into finalArray
-        for (int j = 0; j < sizeofFrame; j++)
-        {
+        for (int j = 0; j < sizeofFrame; j++) {
             finalArray[i][j] = frame[j];
         }
     }
 
-    cout << "Value:  ";
-    for (int i = 0; i < size; i++)
-    {
+    cout << "Page Reference Sequence: ";
+    for (int i = 0; i < size; i++) {
         cout << referenceA[i] << "\t";
     }
     cout << endl;
 
-    for (int j = 0; j < sizeofFrame; j++)
-    {
+    cout << "Frames State:\n";
+    for (int j = 0; j < sizeofFrame; j++) {
         cout << "\t";
-        for (int i = 0; i < size; i++)
-        {
-            if (finalArray[i][j] != -1)
-            {
+        for (int i = 0; i < size; i++) {
+            if (finalArray[i][j] != -1) {
                 cout << finalArray[i][j] << "\t";
-            }
-            else
-            {
+            } else {
                 cout << "-\t";
             }
         }
         cout << endl;
     }
+
     cout << "Total page faults: " << pageFaults << endl;
     return 0;
 }
