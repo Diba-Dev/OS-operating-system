@@ -1,7 +1,7 @@
-#include <iostream>
+//Topic: Optimal Page replacement algorithm
+#include <bits/stdc++.h>
 using namespace std;
 
-// Function to find the optimal page to replace
 int findOptimalPage(int pages[], int frame[], int pageCount, int frameCount, int index) {
     int farthest = index;
     int pageToReplace = -1;
