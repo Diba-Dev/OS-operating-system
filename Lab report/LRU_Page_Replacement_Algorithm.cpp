@@ -2,25 +2,26 @@
 using namespace std;
 
 // Function to find the least recently used page
-int findLRU(int time[], int frameCount) {
-    int minimum = time[0], pos = 0;
-    for (int i = 1; i < frameCount; ++i) {
-        if (time[i] < minimum) {
-            minimum = time[i];
-            pos = i;
+int findLRUPage(int frame[], int lastUsed[], int frameCount) {
+    int lruIndex = 0;
+    for (int i = 1; i < frameCount; i++) {
+        if (lastUsed[i] < lastUsed[lruIndex]) {
+            lruIndex = i;
         }
     }
-    return pos;
+    return lruIndex;
 }
 
-void LRUPageReplacement(int pages[], int pageCount, int frameCount) {
-    int frame[10];  // Fixed-size array for frames
-    int time[10];   // Array to store time for each page in frames (for LRU)
-    int pageFaults = 0, counter = 0;
+void lruPageReplacement(int pages[], int pageCount, int frameCount) {
+    int frame[10];          // Fixed-size array for frames
+    int lastUsed[10];        // Array to track when a page was last used
+    int time = 0;            // Variable to track time for LRU
+    int pageFaults = 0;      // Count of page faults
 
-    // Initialize frame and time arrays
+    // Initialize frames and lastUsed arrays
     for (int i = 0; i < frameCount; i++) {
-        frame[i] = -1;
+        frame[i] = -1;       // -1 means the frame is empty
+        lastUsed[i] = -1;    // No pages have been used yet
     }
 
     cout << "\nLRU Page Replacement Process:\n";
@@ -30,87 +31,75 @@ void LRUPageReplacement(int pages[], int pageCount, int frameCount) {
 
     for (int i = 0; i < pageCount; i++) {
         bool pageFound = false;
-        
-        // Check if the current page is already in the frame
+
+        // Check if the page is already in the frame
         for (int j = 0; j < frameCount; j++) {
             if (frame[j] == pages[i]) {
                 pageFound = true;
-                time[j] = ++counter; // Update the time for the accessed page
+                lastUsed[j] = time;  // Update the time of last use for this page
                 break;
             }
         }
 
+        bool pageFaultOccurred = false; 
         if (!pageFound) {
-            // If the page is not in the frame, find a spot to replace
+            // Page fault occurs, we need to replace a page
             int pageToReplace = -1;
 
-            // Find an empty frame or use LRU to replace
+            // Check for an empty frame first
             for (int j = 0; j < frameCount; j++) {
                 if (frame[j] == -1) {
-                    pageToReplace = j; // Empty spot found
+                    pageToReplace = j;
                     break;
                 }
             }
 
+            // If no empty frame, find the LRU page
             if (pageToReplace == -1) {
-                // If no empty spot, replace the least recently used page
-                pageToReplace = findLRU(time, frameCount);
+                pageToReplace = findLRUPage(frame, lastUsed, frameCount);
             }
 
-            // Replace the page in the frame
+            // Replace the page
             frame[pageToReplace] = pages[i];
-            time[pageToReplace] = ++counter;
+            lastUsed[pageToReplace] = time;  // Update the time of use
             pageFaults++;
-
-            // Display the frame state after the page replacement
-            cout << pages[i] << "\t\t";
-            for (int k = 0; k < frameCount; k++) {
-                if (frame[k] == -1) {
-                    cout << "E\t"; // Empty frame
-                } else {
-                    cout << frame[k] << "\t";
-                }
-            }
-            cout << "\tYes\n";  // Page fault occurred
-        } else {
-            // If the page is already in the frame, no page fault
-            cout << pages[i] << "\t\t";
-            for (int k = 0; k < frameCount; k++) {
-                if (frame[k] == -1) {
-                    cout << "E\t";
-                } else {
-                    cout << frame[k] << "\t";
-                }
-            }
-            cout << "\tNo\n";  // No page fault
+            pageFaultOccurred = true;
         }
+
+        // Print the current frame state and whether a page fault occurred
+        cout << pages[i] << "\t\t";
+        for (int k = 0; k < frameCount; k++) {
+            if (frame[k] == -1) {
+                cout << "E\t";  // Empty slot
+            } else {
+                cout << frame[k] << "\t";
+            }
+        }
+        cout << (pageFaultOccurred ? "\tYes" : "\tNo") << endl;
+
+        time++;  // Increment time after each page request
     }
 
-    // Output the total number of page faults
     cout << "\nTotal Page Faults: " << pageFaults << endl;
 }
 
 int main() {
     int pageCount, frameCount;
 
-    // Input the number of pages
     cout << "Enter the number of pages: ";
     cin >> pageCount;
 
-    int pages[50];  // Fixed-size array for pages (max 50)
-
-    // Input the page reference string
+    int pages[50];  // Fixed-size array for page references
+    
     cout << "Enter the page reference string:\n";
     for (int i = 0; i < pageCount; i++) {
         cin >> pages[i];
     }
 
-    // Input the number of frames
     cout << "Enter the number of frames: ";
     cin >> frameCount;
 
-    // Call the LRU Page Replacement function
-    LRUPageReplacement(pages, pageCount, frameCount);
+    lruPageReplacement(pages, pageCount, frameCount);
 
     return 0;
 }
