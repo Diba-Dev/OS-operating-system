@@ -1,7 +1,8 @@
-#include <iostream>
+//TOPIC : LRU Page replacement algorithm. 
+ 
+#include<bits/stdc++.h>
 using namespace std;
 
-// Function to find the least recently used page
 int findLRUPage(int frame[], int lastUsed[], int frameCount) {
     int lruIndex = 0;
     for (int i = 1; i < frameCount; i++) {
@@ -13,15 +14,14 @@ int findLRUPage(int frame[], int lastUsed[], int frameCount) {
 }
 
 void lruPageReplacement(int pages[], int pageCount, int frameCount) {
-    int frame[10];          // Fixed-size array for frames
-    int lastUsed[10];        // Array to track when a page was last used
-    int time = 0;            // Variable to track time for LRU
-    int pageFaults = 0;      // Count of page faults
+    int frame[10];         
+    int lastUsed[10];       
+    int time = 0;           
+    int pageFaults = 0;     
 
-    // Initialize frames and lastUsed arrays
     for (int i = 0; i < frameCount; i++) {
-        frame[i] = -1;       // -1 means the frame is empty
-        lastUsed[i] = -1;    // No pages have been used yet
+        frame[i] = -1;       
+        lastUsed[i] = -1;    
     }
 
     cout << "\nLRU Page Replacement Process:\n";
@@ -32,7 +32,6 @@ void lruPageReplacement(int pages[], int pageCount, int frameCount) {
     for (int i = 0; i < pageCount; i++) {
         bool pageFound = false;
 
-        // Check if the page is already in the frame
         for (int j = 0; j < frameCount; j++) {
             if (frame[j] == pages[i]) {
                 pageFound = true;

@@ -1,39 +1,36 @@
-#include <iostream>
+//TOPIC : Implementation of Indexed_File_Allocation 
+ 
+#include<bits/stdc++.h>
 using namespace std;
 
-// Function to initialize the disk with free blocks
 void initializeDisk(int disk[], int size) {
     for (int i = 0; i < size; i++) {
-        disk[i] = -1; // -1 indicates the block is free
+        disk[i] = -1; 
     }
 }
 
-// Function to allocate a file using indexed allocation
 void indexedFileAllocation(int disk[], int indexBlock[], int numBlocks, int fileSize, int startIndex) {
     if (startIndex + fileSize > numBlocks) {
         cout << "Error: Not enough space to allocate file.\n";
         return;
     }
 
-    // Initialize index block with pointers to data blocks
     for (int i = 0; i < fileSize; i++) {
-        indexBlock[i] = startIndex + i; // Assign each block a pointer to the data block
+        indexBlock[i] = startIndex + i;
     }
 
-    // Allocate data blocks
     for (int i = 0; i < fileSize; i++) {
-        disk[startIndex + i] = indexBlock[i]; // Mark the block as allocated
+        disk[startIndex + i] = indexBlock[i];
     }
 
     cout << "File allocated successfully.\n";
 }
 
-// Function to display disk and index block states
 void displayDiskAndIndex(int disk[], int indexBlock[], int numBlocks, int fileSize) {
     cout << "Disk state:\n";
     for (int i = 0; i < numBlocks; i++) {
         if (disk[i] == -1) {
-            cout << "F\t"; // F for free
+            cout << "F\t"; 
         } else {
             cout << disk[i] << "\t";
         }

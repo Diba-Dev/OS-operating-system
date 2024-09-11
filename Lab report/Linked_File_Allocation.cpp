@@ -1,4 +1,6 @@
-#include <iostream>
+//TOPIC : Implementation of Linked_File_Allocation
+ 
+#include<bits/stdc++.h>
 using namespace std;
 
 struct Block {
@@ -7,13 +9,12 @@ struct Block {
 };
 
 int main() {
-    const int TOTAL_BLOCKS = 100;   // Total blocks on disk
-    Block disk[TOTAL_BLOCKS];       // Disk with blocks
-    bool allocated[TOTAL_BLOCKS] = {false}; // Allocation status of blocks
+    const int TOTAL_BLOCKS = 100;   
+    Block disk[TOTAL_BLOCKS];       
+    bool allocated[TOTAL_BLOCKS] = {false}; 
 
     int fileCount, startBlock, numBlocks;
 
-    // Initialize the disk's next pointers to -1 (indicating the end of the file)
     for (int i = 0; i < TOTAL_BLOCKS; i++) {
         disk[i].next = -1;
     }
@@ -25,7 +26,6 @@ int main() {
         cout << "\nEnter the starting block of file " << i + 1 << ": ";
         cin >> startBlock;
 
-        // Check if the starting block is free
         if (allocated[startBlock]) {
             cout << "Block " << startBlock << " is already allocated. Try again.\n";
             i--;

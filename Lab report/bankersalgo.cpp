@@ -83,7 +83,7 @@ bool requestResources(int processID, int request[], int available[], int max[][M
     // Pretend to allocate resources
     for (int r = 0; r < resourceCount; r++) {
         available[r] -= request[r];
-        allocation[processID][r] += request[r];3
+        allocation[processID][r] += request[r];
         need[processID][r] -= request[r];
     }
 
